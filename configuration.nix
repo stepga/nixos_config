@@ -52,6 +52,11 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     curl
+    htop
+    iw
+    nix-tree  # show package dependencies
+    pciutils  # lspci
+    rxvt-unicode  # needed for: rxvt-unicode-unwrapped-9.31-terminfo/share/terminfo/r/rxvt-unicode
     tmux
     vim
     wget
