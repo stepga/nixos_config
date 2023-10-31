@@ -8,12 +8,10 @@ let
   secrets = import ./secrets.nix;
 in
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      <nixos-hardware/pcengines/apu>
-      ./hardware-configuration.nix
-      ./apu2d4.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    ./apu2d4.nix
+  ];
 
   boot = {
     loader = {
