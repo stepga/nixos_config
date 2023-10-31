@@ -24,11 +24,16 @@ in
     };
   };
 
-  networking.hostName = "apu2d4"; # Define your hostname.
-  networking.domain= "network"; # "networking.fqdn: ${networking.hostName}.${networking.domain}"
-  # Pick only one of the below networking options.
-  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking = {
+    hostName = "apu2d4";
+    domain = "network"; # "networking.fqdn: ${networking.hostName}.${networking.domain}"
+    wireless = {
+      enable = true;  # Enables wireless support via wpa_supplicant.
+    };
+    firewall = {
+      enable = false;
+    };
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
@@ -45,7 +50,9 @@ in
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [ ];
-    openssh.authorizedKeys.keys = [ secrets.authorized_keys.feni ];
+    openssh = {
+      authorizedKeys.keys = [ secrets.authorized_keys.feni ];
+    };
   };
 
   # List packages installed in system profile. To search, run:
@@ -71,15 +78,6 @@ in
       KbdInteractiveAuthentication = false;
       PermitRootLogin = "no";
     };
-  };
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-  networking.firewall = {
-    enable = false;
   };
 
   # Copy the NixOS configuration file and link it from the resulting system
