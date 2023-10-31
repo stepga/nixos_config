@@ -92,4 +92,12 @@ in
   system.copySystemConfiguration = true;
 
   system.stateVersion = "23.05";
+
+  programs = {
+    tmux = {
+      enable = true;
+      clock24 = true;
+      keyMode = "vi";
+    };
+  };
 }
