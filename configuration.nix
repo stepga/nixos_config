@@ -25,9 +25,17 @@ in
   };
 
   networking = {
-    hostName = "apu2d4";
-    domain = "network"; # "networking.fqdn: ${networking.hostName}.${networking.domain}"
     enableIPv6 = false;
+    hostName = "apu2d4";
+    domain = "lan";
+    defaultGateway = "192.168.1.1";
+    interfaces = {
+      enp1s0.ipv4.addresses = [ {
+        address = "192.168.1.2"; # XXX dhcp range starts at 192.168.1.3
+        prefixLength = 24;
+      } ];
+    };
+    nameservers = [ "8.8.8.8" "8.8.4.4" ];
     firewall = {
       enable = false;
     };
