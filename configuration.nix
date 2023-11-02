@@ -12,6 +12,7 @@ in
     [ # Include the results of the hardware scan.
       <nixos-hardware/pcengines/apu>
       ./hardware-configuration.nix
+      ./apu2d4.nix
     ];
 
   boot = {
