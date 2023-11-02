@@ -85,6 +85,29 @@ in
     };
   };
 
+  services.hostapd = {
+    enable = true;
+    interface = "wlp4s0";
+    ssid = secrets.wifi.ssid;
+    wpaPassphrase = secrets.wifi.passphrase;
+    hwMode = "a";
+    channel = 0;
+    countryCode = "US";
+    extraConfig =
+    ''
+        # turn off dfs (ie outdoor ir/radar detection)
+        ieee80211h=0
+
+        ieee80211n=1
+        wmm_enabled=1
+        ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][DSSS_CK-40][MAX-AMSDU-7935]
+
+        ieee80211ac=1
+        vht_oper_chwidth=1
+        vht_capab=[SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-MPDU-11454]
+    '';
+  };
+
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
