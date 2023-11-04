@@ -17,4 +17,12 @@
   # * kernel pinning
   # * remote builder & nix-copy-closure
   networking.wireless.athUserRegulatoryDomain = true;
+
+  # workaround for setting regdomain and driving 5ghz with ath10k card
+  nixpkgs.config.allowUnfree = true;
+  hardware = {
+    enableAllFirmware = true;
+    enableRedistributableFirmware = true;
+    wirelessRegulatoryDatabase = true;
+  };
 }
