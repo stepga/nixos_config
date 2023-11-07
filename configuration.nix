@@ -34,10 +34,13 @@ in
         prefixLength = 24;
       } ];
     };
-    nameservers = [ "8.8.8.8" "8.8.4.4" ];
-    firewall = {
-      enable = false;
+    interfaces = {
+      wlp4s0.ipv4.addresses = [ {
+        address = "10.0.0.1";
+        prefixLength = 24;
+      } ];
     };
+    firewall.enable = false;
   };
 
   # Set your time zone.
@@ -106,6 +109,25 @@ in
         vht_oper_chwidth=1
         vht_capab=[SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-MPDU-11454]
     '';
+  };
+
+  services.dnsmasq = {
+    enable = true;
+    settings = {
+      # Never forward A or AAAA queries for plain names, without dots or domain
+      # parts, to upstream nameservers. If the name is not known from /etc/hosts
+      # or DHCP then a "not found" answer is returned.
+      domain-needed = true;
+      # networking.nameservers in /etc/resolv.conf shoud be replaced by 127.0.0.1
+      server = [ "8.8.8.8" "8.8.4.4" ];
+      dhcp-range = [ "10.0.0.2,10.0.0.254,24h" ];  # TODO use variable
+      interface = "wlp4s0";  # TODO use variable
+      listen-address = "10.0.0.1";  # TODO use variable
+      # no reverse-lookup for private ip addresses
+      bogus-priv = true;
+      cache-size = 10000;
+      log-queries = true;
+    };
   };
 
   # Copy the NixOS configuration file and link it from the resulting system
