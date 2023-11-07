@@ -5,6 +5,14 @@
 { config, pkgs, ... }:
 
 let
+  modem_ip_addr = "192.168.1.1";
+  wan_ip_addr = "192.168.1.2"; # modem's dhcp range starts at 192.168.1.3
+  wan_client_ip_addrs = "192.168.1.2-192.168.1.254";
+  wan_iface_name = "enp1s0";
+  ap_ip_addr = "10.0.0.1";
+  ap_iface_name = "wlp4s0";
+  ap_dhcp_range = "10.0.0.2,10.0.0.254,24h";
+
   secrets = import ./secrets.nix;
 in
 {
@@ -23,24 +31,60 @@ in
     };
   };
 
+  boot.kernel.sysctl = {
+    "net.ipv4.conf.all.forwarding" = true;
+  };
+
   networking = {
     enableIPv6 = false;
     hostName = "apu2d4";
     domain = "lan";
-    defaultGateway = "192.168.1.1";
+    defaultGateway = "${modem_ip_addr}";
     interfaces = {
-      enp1s0.ipv4.addresses = [ {
-        address = "192.168.1.2"; # XXX dhcp range starts at 192.168.1.3
-        prefixLength = 24;
-      } ];
-    };
-    interfaces = {
-      wlp4s0.ipv4.addresses = [ {
-        address = "10.0.0.1";
-        prefixLength = 24;
-      } ];
+      "${wan_iface_name}" = {
+        useDHCP = false;
+        ipv4.addresses = [ {
+          address = "${wan_ip_addr}";
+          prefixLength = 24;
+        } ];
+      };
+      "${ap_iface_name}" = {
+        useDHCP = false;
+        ipv4.addresses = [ {
+          address = "${ap_ip_addr}";
+          prefixLength = 24;
+        } ];
+      };
     };
     firewall.enable = false;
+
+    nftables = {
+      enable = true;
+      ruleset = ''
+        table ip filter {
+          chain input {
+            type filter hook input priority 0; policy accept;
+            iifname "${wan_iface_name}" ct state { established, related } accept comment "Allow established traffic"
+            iifname "${wan_iface_name}" icmp type echo-request counter accept comment "Allow ping"
+            iifname "${wan_iface_name}" tcp dport 22 ip saddr { ${wan_client_ip_addrs} } accept comment "Allow ssh from isp modem dhcp clients"
+            iifname "${wan_iface_name}" counter drop comment "Drop all other unsolicited traffic from wan"
+          }
+
+          chain forward {
+            type filter hook forward priority 0; policy drop;
+            iifname { "${ap_iface_name}" } oifname { "${wan_iface_name}" } accept comment "Allow trusted LAN to WAN"
+            iifname { "${wan_iface_name}" } oifname { "${ap_iface_name}" } ct state established, related accept comment "Allow established back to LANs"
+          }
+        }
+
+        table ip nat {
+          chain postrouting {
+            type nat hook postrouting priority 100; policy accept;
+            oifname "${wan_iface_name}" masquerade
+          }
+        }
+      '';
+    };
   };
 
   # Set your time zone.
@@ -90,7 +134,7 @@ in
 
   services.hostapd = {
     enable = true;
-    interface = "wlp4s0";
+    interface = "${ap_iface_name}";
     ssid = secrets.wifi.ssid;
     wpaPassphrase = secrets.wifi.passphrase;
     hwMode = "a";
@@ -120,9 +164,9 @@ in
       domain-needed = true;
       # networking.nameservers in /etc/resolv.conf shoud be replaced by 127.0.0.1
       server = [ "8.8.8.8" "8.8.4.4" ];
-      dhcp-range = [ "10.0.0.2,10.0.0.254,24h" ];  # TODO use variable
-      interface = "wlp4s0";  # TODO use variable
-      listen-address = "10.0.0.1";  # TODO use variable
+      dhcp-range = [ "${ap_dhcp_range}" ];
+      interface = "${ap_iface_name}";
+      listen-address = "${ap_ip_addr}";
       # no reverse-lookup for private ip addresses
       bogus-priv = true;
       cache-size = 10000;
