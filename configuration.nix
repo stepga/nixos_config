@@ -13,6 +13,10 @@ let
   ap_iface_name = "wlp4s0";
   ap_dhcp_range = "10.0.0.2,10.0.0.254,24h";
 
+  assets_path = "/etc/nixos/assets";
+  ads_host_file_url = "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt";
+  ads_host_file_path = "${assets_path}/ads-and-tracking-extended.txt";
+
   secrets = import ./secrets.nix;
 in
 {
@@ -171,6 +175,32 @@ in
       bogus-priv = true;
       cache-size = 10000;
       log-queries = true;
+      log-facility = "/tmp/ad-block.log";
+      addn-hosts = "${ads_host_file_path}";
+    };
+  };
+
+  systemd.timers."dnsmasq-hosts-file" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5m";
+      OnUnitActiveSec = "1d";
+      OnCalendar = "daily";
+      Persistent = true;
+      Unit = "dnsmasq-hosts-file.service";
+    };
+  };
+
+  systemd.services."dnsmasq-hosts-file" = {
+    script = ''
+      set -eu
+      ${pkgs.coreutils}/bin/mkdir -p ${assets_path}
+      ${pkgs.curl}/bin/curl -o ${ads_host_file_path}.tmp ${ads_host_file_url}
+      ${pkgs.coreutils}/bin/mv ${ads_host_file_path}.tmp ${ads_host_file_path}
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
     };
   };
 
