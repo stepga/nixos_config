@@ -12,3 +12,10 @@ Secrets are stored in `secrets.nix`, which looks something like this:
   };
 }
 ```
+
+## TODOs
+
+- [ ] add `rclone` timer & service, syncing nextcloud
+- [ ] use authorized_keys from secrets.nix
+- [ ] imprison some clients via nftables
+- [ ] flakes & home-manager (?)
