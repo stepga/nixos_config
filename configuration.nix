@@ -28,9 +28,6 @@ in
     hostName = "apu2d4";
     domain = "network"; # "networking.fqdn: ${networking.hostName}.${networking.domain}"
     enableIPv6 = false;
-    wireless = {
-      enable = true;  # Enables wireless support via wpa_supplicant.
-    };
     firewall = {
       enable = false;
     };
