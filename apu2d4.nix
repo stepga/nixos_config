@@ -32,4 +32,11 @@
     enableRedistributableFirmware = true;
     wirelessRegulatoryDatabase = true;
   };
+
+  fileSystems."/usb" = {
+    device = "/dev/disk/by-uuid/b985e946-77ea-4beb-9fb6-55e3066b4ebe";
+    fsType = "ext4";
+    # make a mount of the external usb drive asynchronous and non-critical
+    options = [ "nofail" ];
+  };
 }
