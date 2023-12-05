@@ -138,25 +138,46 @@ in
 
   services.hostapd = {
     enable = true;
-    interface = "${ap_iface_name}";
-    ssid = secrets.wifi.ssid;
-    wpaPassphrase = secrets.wifi.passphrase;
-    hwMode = "a";
-    channel = 0;
-    countryCode = "US";
-    extraConfig =
-    ''
-        # turn off dfs (ie outdoor ir/radar detection)
-        ieee80211h=0
-
-        ieee80211n=1
-        wmm_enabled=1
-        ht_capab=[HT40+][HT40-][SHORT-GI-20][SHORT-GI-40][DSSS_CK-40][MAX-AMSDU-7935]
-
-        ieee80211ac=1
-        vht_oper_chwidth=1
-        vht_capab=[SHORT-GI-80][TX-STBC-2BY1][RX-STBC-1][MAX-MPDU-11454]
-    '';
+    radios."${ap_iface_name}" = {
+      band = "5g";
+      channel = 0;
+      # disables scan for overlapping BSSs in HT40+/- mode
+      # (likely violates regulatory requirements)
+      noScan = true;
+      countryCode = "US";
+      networks.${ap_iface_name} = {
+        ssid = secrets.wifi.ssid;
+        authentication = {
+          mode = "wpa2-sha256";
+          wpaPassword = secrets.wifi.passphrase;
+        };
+      };
+      # IEEE  802.11n; HT (high throughput); enabled by default
+      # XXX using ACS (channel = 0) together with HT40- (wifi4.capabilities) is unsupported by hostapd
+      wifi4.capabilities = [
+        "HT40+"
+        #"HT40-"
+        "SHORT-GI-20"
+        "SHORT-GI-40"
+        "DSSS_CK-40"
+        "MAX-AMSDU-7935"
+      ];
+      wifi5 = {
+        # IEEE 802.11ac; VHT (very high throughput); enabled by default
+        capabilities = [
+          "SHORT-GI-80"
+          "TX-STBC-2BY1"
+          "RX-STBC-1"
+          "MAX-MPDU-11454"
+        ];
+        # vht_oper_chwidth=1
+        # "20or40": 0 (default)
+        # "80":     1
+        # "160":    2
+        # "80+80":  3
+        operatingChannelWidth = "80";
+      };
+    };
   };
 
   services.dnsmasq = {
