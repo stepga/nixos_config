@@ -119,6 +119,7 @@ in
     iw
     nix-tree  # show package dependencies
     pciutils  # lspci
+    rclone
     rxvt-unicode  # needed for: rxvt-unicode-unwrapped-9.31-terminfo/share/terminfo/r/rxvt-unicode
     tmux
     vim
@@ -218,6 +219,34 @@ in
       ${pkgs.coreutils}/bin/mkdir -p ${assets_path}
       ${pkgs.curl}/bin/curl -o ${ads_host_file_path}.tmp ${ads_host_file_url}
       ${pkgs.coreutils}/bin/mv ${ads_host_file_path}.tmp ${ads_host_file_path}
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+    };
+  };
+
+  systemd.timers."rclone-nextcloud" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "6m";
+      OnUnitActiveSec = "1d";
+      OnCalendar = "daily";
+      Persistent = true;
+      Unit = "rclone-nextcloud.service";
+    };
+  };
+
+  systemd.services."rclone-nextcloud" = {
+    script = ''
+      set -eu
+      ${pkgs.gnugrep}/bin/grep -qs "/usb" /proc/mounts || mount /usb
+      ${pkgs.coreutils}/bin/mkdir -p /usb/nextcloud_sync
+      ${pkgs.coreutils}/bin/mkdir -p /usb/nextcloud_backups
+      ${pkgs.coreutils}/bin/echo "${secrets.rclone.content}" > /tmp/rclone.config
+      ${pkgs.rclone}/bin/rclone --config /tmp/rclone.config \
+        sync ${secrets.rclone.source} /usb/nextcloud_sync \
+        --backup-dir "/usb/nextcloud_backups/$(date '+%Y_%m_%d-%H_%M_%S')"
     '';
     serviceConfig = {
       Type = "oneshot";
