@@ -110,6 +110,7 @@ in
       authorizedKeys.keys = [ secrets.authorized_keys.feni ];
     };
   };
+  users.users."root".openssh.authorizedKeys.keys = [ secrets.authorized_keys.root ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -133,7 +134,7 @@ in
     settings = {
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
-      PermitRootLogin = "no";
+      PermitRootLogin = "yes";
     };
   };
 
