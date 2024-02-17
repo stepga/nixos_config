@@ -11,11 +11,9 @@ let
   wan_iface_name = "enp1s0";
   ap_ip_addr = "10.0.0.1";
   ap_iface_name = "wlp4s0";
-  ap_dhcp_range = "10.0.0.2,10.0.0.254,24h";
-
-  assets_path = "/etc/nixos/assets";
-  ads_host_file_url = "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt";
-  ads_host_file_path = "${assets_path}/ads-and-tracking-extended.txt";
+  ap_dhcp_range_start = "10.0.0.2";
+  ap_dhcp_range_end = "10.0.0.254";
+  ap_dhcp_subnet_mask = "255.255.255.0";
 
   secrets = import ./secrets.nix;
 in
@@ -182,48 +180,49 @@ in
     };
   };
 
-  services.dnsmasq = {
+  services.adguardhome = {
     enable = true;
+    openFirewall = false;
+    mutableSettings = true;
     settings = {
-      # Never forward A or AAAA queries for plain names, without dots or domain
-      # parts, to upstream nameservers. If the name is not known from /etc/hosts
-      # or DHCP then a "not found" answer is returned.
-      domain-needed = true;
-      # networking.nameservers in /etc/resolv.conf shoud be replaced by 127.0.0.1
-      server = [ "8.8.8.8" "8.8.4.4" ];
-      dhcp-range = [ "${ap_dhcp_range}" ];
-      interface = "${ap_iface_name}";
-      listen-address = "${ap_ip_addr}";
-      # no reverse-lookup for private ip addresses
-      bogus-priv = true;
-      cache-size = 10000;
-      log-queries = true;
-      log-facility = "/tmp/ad-block.log";
-      addn-hosts = "${ads_host_file_path}";
-    };
-  };
+      bind_port = 1080;
+      schema_version = 24;
 
-  systemd.timers."dnsmasq-hosts-file" = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnBootSec = "5m";
-      OnUnitActiveSec = "1d";
-      OnCalendar = "daily";
-      Persistent = true;
-      Unit = "dnsmasq-hosts-file.service";
-    };
-  };
+      # XXX the following settings were extracted from an interactively configured
+      # AdGuardHome's config file (see /var/lib/AdGuardHome/AdGuardHome.yaml).
+      users = [
+        {
+          name = "admin";
+          password = "${secrets.adguardhome}";
+        }
+      ];
+      dhcp = {
+        enabled = true;
+        interface_name = "${ap_iface_name}";
+        local_domain_name = "lan";
+        dhcpv4 = {
+          gateway_ip = "${ap_ip_addr}";
+          subnet_mask = "${ap_dhcp_subnet_mask}";
+          range_start = "${ap_dhcp_range_start}";
+          range_end = "${ap_dhcp_range_end}";
+          lease_duration = 86400;
+        };
+      };
 
-  systemd.services."dnsmasq-hosts-file" = {
-    script = ''
-      set -eu
-      ${pkgs.coreutils}/bin/mkdir -p ${assets_path}
-      ${pkgs.curl}/bin/curl -o ${ads_host_file_path}.tmp ${ads_host_file_url}
-      ${pkgs.coreutils}/bin/mv ${ads_host_file_path}.tmp ${ads_host_file_path}
-    '';
-    serviceConfig = {
-      Type = "oneshot";
-      User = "root";
+      filters = [
+        {
+          enabled = true;
+          id = 1;
+          url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt";
+          name = "AdGuard DNS filter";
+        }
+        {
+          enabled = true;
+          id = 2;
+          url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt";
+          name = "AdAway Default Blocklist";
+        }
+      ];
     };
   };
 
