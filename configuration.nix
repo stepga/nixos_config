@@ -68,18 +68,23 @@ in
             type filter hook input priority 0; policy accept;
             iifname "${wan_iface_name}" ct state { established, related } accept comment "Allow established traffic"
             iifname "${wan_iface_name}" icmp type echo-request counter accept comment "Allow ping"
-            iifname "${wan_iface_name}" tcp dport 22 ip saddr { ${wan_client_ip_addrs} } accept comment "Allow ssh from isp modem dhcp clients"
+            iifname "${wan_iface_name}" tcp dport 22 ip saddr ${wan_client_ip_addrs} accept comment "Allow ssh from isp modem dhcp clients"
             iifname "${wan_iface_name}" counter drop comment "Drop all other unsolicited traffic from wan"
           }
 
           chain forward {
             type filter hook forward priority 0; policy drop;
-            iifname { "${ap_iface_name}" } oifname { "${wan_iface_name}" } accept comment "Allow trusted LAN to WAN"
-            iifname { "${wan_iface_name}" } oifname { "${ap_iface_name}" } ct state established, related accept comment "Allow established back to LANs"
+            iifname "${ap_iface_name}" oifname "${wan_iface_name}" accept comment "Allow trusted LAN to WAN"
+            iifname "${wan_iface_name}" oifname "${ap_iface_name}" ct state established, related accept comment "Allow established back to LANs"
           }
         }
 
         table ip nat {
+          chain prerouting {
+            type nat hook prerouting priority -100;
+            iifname "${ap_iface_name}" tcp dport 80 redirect to 1080
+          }
+
           chain postrouting {
             type nat hook postrouting priority 100; policy accept;
             oifname "${wan_iface_name}" masquerade
