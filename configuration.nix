@@ -227,6 +227,16 @@ in
           url = "https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt";
           name = "AdAway Default Blocklist";
         }
+        {
+          enabled = true;
+          id = 3;
+          url = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt";
+          name = "HaGeZi's Pro DNS Blocklist";
+        }
+      ];
+      user_rules = [
+        "# respond with ${ap_ip_addr} for dns.lan (nftable will do the nat redirect)"
+        "${ap_ip_addr} dns.lan"
       ];
     };
   };
