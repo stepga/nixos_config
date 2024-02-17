@@ -15,10 +15,8 @@ Secrets are stored in `secrets.nix`, which looks something like this:
 
 ## TODOs
 
-- [ ] use authorized_keys from secrets.nix
-- [ ] imprison some clients via nftables
+- [ ] reformat like personal setup + home-manager
 - [ ] systemd.services.rclone-nextcloud
   - [ ] /tmp/rclone.config is world-readable, never deleted
   - [ ] /tmp/rclone.config should be replace by something like bash's process substitution
   - [ ] disk-usage of /usb should be considered
-- [ ] flakes & home-manager (?)
