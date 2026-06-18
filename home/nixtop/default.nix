@@ -60,6 +60,7 @@
     pcmanfm
     pstree
     pulseaudio # pactl in i3wm's config
+    python3
     ripgrep
     ripgrep-all # rga, rga-fzf
     rofi
@@ -79,17 +80,6 @@
     xxd
     yt-dlp
     zip
-    (pkgs.python312.withPackages (ps: with ps; [
-      jupyterlab
-      matplotlib
-      numpy # these two are
-      pandas
-      pyqt5
-      qtpy
-      scikit-learn
-      scipy # probably redundant to pandas
-      statsmodels
-    ]))
   ];
 
   home.sessionPath = [
