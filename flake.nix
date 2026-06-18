@@ -32,7 +32,7 @@
             home-manager.users."${variables.username}" = import ./home/${variables.hostname};
           }
         ];
-      specialArgs = { inherit variables; };
+        specialArgs = { inherit variables; };
       };
     };
   };
