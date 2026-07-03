@@ -24,6 +24,13 @@ set number
 " don't preselect/insert the first completion
 set completeopt=menu,menuone,noselect,noinsert
 
+" FileType indentation
+"  tabstop=n:     Display a tab character as n spaces.
+"  shiftwidth=n:  Use n spaces for each indentation level (>>, <<, auto-indent).
+"  softtabstop=n: Make <Tab> and <Backspace> behave in increments of n spaces while editing.
+"  expandtab:     Insert spaces instead of actual tab characters.
+autocmd FileType json,html,xml,yaml setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+
 " +----------------------------------------------------------------------------+
 " |                            PLUGINS                                         |
 " +----------------------------------------------------------------------------+
