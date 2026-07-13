@@ -19,6 +19,7 @@
     ccls
     colordiff
     delve
+    dig
     dmidecode
     entr # launch and auto-reload on file change: `find ./src/ | entr -r go test src/foo.go`
     file
