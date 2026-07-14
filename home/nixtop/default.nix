@@ -38,7 +38,7 @@
     mdcat # mdless
     ncdu
     nil
-    nixfmt-rfc-style
+    nixfmt
     nload
     nvd
     pass
@@ -135,6 +135,8 @@
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
+    withRuby = true; # default value of has changed from `true` to `false` in 26.05
+    withPython3 = true; # default value of has changed from `true` to `false` in 26.05
     plugins = with pkgs.vimPlugins; [
       barbar-nvim
       fzf-vim
@@ -145,7 +147,7 @@
       vim-fugitive
 
       # treesitter: highlighting & indenting; requires gcc
-      nvim-treesitter.withAllGrammars
+      nvim-treesitter
       # nix ftplugin
       vim-nix
 

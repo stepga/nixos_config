@@ -48,7 +48,7 @@
     script = ''#!/usr/bin/env bash
     set -eu
 
-    XRANDR="${pkgs.xorg.xrandr}/bin/xrandr"
+    XRANDR="${pkgs.xrandr}/bin/xrandr"
     WC="${pkgs.coreutils}/bin/wc"
     GREP="${pkgs.gnugrep}/bin/grep"
     ECHO="${pkgs.coreutils-full}/bin/echo"
@@ -173,7 +173,7 @@
   # XXX: kept in systemPackages as these packages are used within systemd.services scripts
   environment.systemPackages = with pkgs; [
     gnugrep
-    xorg.xrandr
+    xrandr
     coreutils-full
 
     (callPackage ./scripts/clip/derivation.nix {}) # depends on: xclip, imagemagick

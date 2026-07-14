@@ -1,9 +1,8 @@
-{ pkgs, lib, variables, ... }:
+{ config, pkgs, lib, variables, ... }:
 
 {
   home.packages = with pkgs; [
     arandr
-    blueberry
     brightnessctl
     dunst # dbus notification daemon (needed for mictray)
     eog
@@ -98,6 +97,7 @@
 
   programs.firefox = {
     enable = true;
+    configPath = "${config.xdg.configHome}/mozilla/firefox"; # default changed from ~/.mozilla/firefox to ~/.config/mozilla/firefox in 26.05
 
     # see https://mozilla.github.io/policy-templates/ for
     policies = {
@@ -292,7 +292,7 @@
           notification = false;
         }
         {
-          command = "${pkgs.blueberry}/bin/blueberry-tray";
+          command = "${pkgs.blueman}/bin/blueman-applet";
           always = true;
           notification = false;
         }
