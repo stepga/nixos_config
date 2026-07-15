@@ -13,7 +13,6 @@
     imagemagick # scripts/clip
     killall # needed for killing pasystray before (re)starting it in i3wm
     mictray
-    mpv
     nautilus
     networkmanagerapplet
     nextcloud-client
@@ -364,5 +363,13 @@
   services.picom = {
     enable = true;
     vSync = true;
+  };
+
+  programs.mpv = {
+    enable = true;
+    config = {
+      # makes choppy video playback (due to frame pacing/clock sync problems) disappear
+      video-sync = "display-resample";
+    };
   };
 }
