@@ -39,30 +39,52 @@
 
   systemd.services.reenable-connected-internal-display = {
     description = "Re-enabling a disabled internal display if needed.";
-    wantedBy = [ "post-resume.target" ];
-    after = [ "post-resume.target" ];
-    environment = {
-      DISPLAY = ":0";
-      XAUTHORITY = "/home/${variables.username}/.Xauthority";
+    wantedBy = [ "sleep.target" ];
+    after = [ "sleep.target" ];
+
+    # do not rely on the binaries being in PATH
+    path = with pkgs; [
+      xrandr
+      coreutils
+      gnugrep
+    ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = variables.username;
+      Environment = [
+        "DISPLAY=:0"
+        "XAUTHORITY=/home/${variables.username}/.Xauthority"
+      ];
     };
+
     script = ''#!/usr/bin/env bash
-    set -eu
+      set -eu
 
-    XRANDR="${pkgs.xrandr}/bin/xrandr"
-    WC="${pkgs.coreutils}/bin/wc"
-    GREP="${pkgs.gnugrep}/bin/grep"
-    ECHO="${pkgs.coreutils-full}/bin/echo"
+      OK=0
+      for i in $(seq 1 20); do
+        echo "... waiting for XServer $i/20"
+        if xrandr --query >/dev/null 2>&1; then
+          OK=1
+          break
+        fi
+        sleep 0.2
+      done
 
-    CONNECTED_DISPLAYS=$("$XRANDR" --query | "$GREP" -w connected | "$WC" -l)
-    "$ECHO" "amount of connected displays: $CONNECTED_DISPLAYS"
+      if [ "$OK" -eq 0 ]; then
+        echo "xrandr failed ultimatively"
+        exit 1
+      fi
 
-    if [[ "$CONNECTED_DISPLAYS" -eq 1 ]]; then
-    # only one display is connected, on a notebook this should be the internal one.
-    # `xrandr --auto` re-enables it, preventing a disabled black screen on resume.
-    "$XRANDR" --auto --verbose
-    fi
+      CONNECTED=$(xrandr --query | grep -w "connected" | wc -l)
+      echo "amount of connected displays: $CONNECTED"
+
+      if [ "$CONNECTED" -eq 1 ]; then
+        # only one display is connected, on a notebook this must be the internal one.
+        # `xrandr --auto` re-enables it, preventing a disabled black screen on resume.
+        xrandr --auto --verbose
+      fi
     '';
-    serviceConfig.Type = "oneshot";
   };
 
   networking.hostName = "${variables.hostname}";
