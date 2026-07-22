@@ -42,6 +42,7 @@
     nload
     nvd
     pass
+    pciutils # lspci
     pstree
     python3
     ripgrep
@@ -51,6 +52,7 @@
     unixtools.netstat
     unrar
     unzip
+    usbutils # usbreset
     wget
     which
     xxd
