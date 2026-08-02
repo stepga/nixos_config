@@ -139,10 +139,28 @@
     HandlePowerKey = "suspend";
   };
 
-  services.upower = {
-    enable = true;
-    percentageCritical = 18; # default 5
-    criticalPowerAction = "Hibernate";
+
+  systemd.services.low-battery-suspend = {
+    description = "Suspend on low battery";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "low-battery-suspend" ''
+        cap=$(cat /sys/class/power_supply/BAT0/capacity)
+        status=$(cat /sys/class/power_supply/BAT0/status)
+
+        if [ "$status" = "Discharging" ] && [ "$cap" -le 15 ]; then
+          systemctl suspend
+        fi
+      '';
+    };
+  };
+
+  systemd.timers.low-battery-suspend = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "2min";
+      OnUnitActiveSec = "2min";
+    };
   };
 
   hardware.bluetooth = {
