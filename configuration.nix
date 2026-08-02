@@ -205,7 +205,32 @@
     musescore
 
     typescript-language-server
+
+    actual-server
   ];
+
+  # Create a dedicated user and group for Actual Budget
+  users.users.actual = {
+    isSystemUser = true;
+    group = "actual";
+    home = "/var/lib/actual";
+    createHome = true;
+  };
+  users.groups.actual = { };
+
+  # Run the actual server as a systemd service
+  systemd.services.actual = {
+    description = "Actual Budget Server";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      User = "actual";
+      Group = "actual";
+      WorkingDirectory = "/var/lib/actual";
+      ExecStart = "${pkgs.actual-server}/bin/actual-server";
+      Restart = "always";
+    };
+  };
 
   documentation.dev.enable = true;
 
