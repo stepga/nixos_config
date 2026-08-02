@@ -139,24 +139,74 @@
     HandlePowerKey = "suspend";
   };
 
+  # After rebuilding, check whether the user timer is active:
+  #   systemctl --user status low-battery-suspend.timer
+  # If it is not enabled, enable it once:
+  #   systemctl --user enable --now low-battery-suspend.timer
+  # Verify:
+  #   systemctl --user list-timers low-battery-suspend.timer
+  systemd.user.services.low-battery-suspend = {
+    description = "Low battery suspend prompt";
 
-  systemd.services.low-battery-suspend = {
-    description = "Suspend on low battery";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = pkgs.writeShellScript "low-battery-suspend" ''
-        cap=$(cat /sys/class/power_supply/BAT0/capacity)
-        status=$(cat /sys/class/power_supply/BAT0/status)
 
-        if [ "$status" = "Discharging" ] && [ "$cap" -le 15 ]; then
+      Environment = [
+        "DISPLAY=:0"
+        "XAUTHORITY=%h/.Xauthority"
+      ];
+
+      ExecStart = pkgs.writeShellScript "low-battery-suspend" ''
+        BAT="/sys/class/power_supply/BAT0"
+
+        if [ ! -e "$BAT/capacity" ]; then
+          echo "expected file does not exist: $BAT/capacity"
+          exit 1
+        fi
+
+        cap=$(<"$BAT/capacity")
+        status=$(<"$BAT/status")
+        echo "battery: $cap%, status: $status"
+
+        if [ "$status" != "Discharging" ] || [ "$cap" -gt 15 ]; then
+          exit 0
+        fi
+
+        if ! ${pkgs.xdpyinfo}/bin/xdpyinfo >/dev/null 2>&1; then
+          echo "no X server available: aborting this check"
+          exit 0
+        fi
+
+        choice=$(
+          ${pkgs.coreutils}/bin/timeout 30s ${pkgs.runtimeShell} -c '
+            printf "Suspend now\nCancel\n" |
+              ${pkgs.rofi}/bin/rofi -dmenu -p "Battery '"$cap"'% - auto-suspend in 30s"
+          '
+        )
+        rc=$?
+
+        echo "rofi result: choice=[$choice], rc=$rc"
+
+        if [ "$choice" = "Suspend now" ]; then
+          echo "'Suspend now' has been chosen"
+          systemctl suspend
+          exit 0
+        fi
+
+        # timeout returns exit code 124 if command actually times out
+        if [ "$rc" -eq 124 ]; then
+          echo "timeout: auto-suspend"
           systemctl suspend
         fi
+
+        exit 0
       '';
     };
   };
 
-  systemd.timers.low-battery-suspend = {
+  systemd.user.timers.low-battery-suspend = {
     wantedBy = [ "timers.target" ];
+
     timerConfig = {
       OnBootSec = "2min";
       OnUnitActiveSec = "2min";
