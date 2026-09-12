@@ -5,7 +5,7 @@
   home.homeDirectory = "/home/${variables.username}";
 
   imports = [
-    ../desktop.nix
+    ../../home/desktop.nix
   ];
 
   home.packages = with pkgs; [
