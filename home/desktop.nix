@@ -5,6 +5,7 @@
     arandr
     brightnessctl
     dunst # dbus notification daemon (needed for mictray)
+    libnotify # notify-send
     eog
     evince
     gedit
