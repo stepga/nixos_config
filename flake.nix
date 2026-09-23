@@ -12,6 +12,11 @@
       # to avoid problems caused by different versions of nixpkgs.
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # sbomnix exposes vulnxscan
+    sbomnix = {
+      url = "github:tiiuae/sbomnix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }:
@@ -49,7 +54,10 @@
               home-manager.users."${hostVariables.username}" = import ./hosts/${hostname}/home.nix;
             }
           ];
-          specialArgs = { variables = hostVariables; };
+          specialArgs = {
+            inherit inputs;
+            variables = hostVariables;
+          };
         };
     in
     {

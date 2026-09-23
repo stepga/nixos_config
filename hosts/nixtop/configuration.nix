@@ -8,6 +8,8 @@
 
       # shared desktop/X11 setup (window manager, sound, printing, ...)
       ../../modules/desktop.nix
+
+      ../../modules/security-check.nix
     ];
 
   services.xserver.videoDrivers = [ "amdgpu" ];

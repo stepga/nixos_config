@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>NixOS Security Report</title>
+
+  <link rel="stylesheet" href="report.css">
+</head>
+
+<body>
+
+<h1>NixOS Security Report</h1>
+
+<div class="meta">
+  Generated <%= Time.now.iso8601 %>
+</div>
+
+<% if findings.empty? %>
+
+  <div class="ok">
+    No potential vulnerabilities were reported.
+  </div>
+
+<% else %>
+
+  <div class="warning">
+    <strong><%= findings.length %></strong>
+    potential vulnerability findings.
+  </div>
+
+  <br>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Vulnerability</th>
+        <th>Package</th>
+        <th>Version</th>
+        <th>Severity</th>
+        <th>Sources</th>
+        <th>Patch state</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% findings.each do |row| %>
+        <% vuln = row["vuln_id"].to_s %>
+        <% package = row["package"].to_s %>
+        <% version = (
+          row["version_local"] ||
+          row["version"] ||
+          ""
+        ).to_s %>
+        <% score = row["severity"].to_s %>
+        <% url = row["url"].to_s %>
+        <% patch_state = row["patch_state"].to_s %>
+
+        <% score_class =
+          if severity(row) >= 9
+            "critical"
+          elsif severity(row) >= 7
+            "high"
+          elsif severity(row) >= 4
+            "medium"
+          else
+            "low"
+          end
+        %>
+
+        <tr>
+          <td>
+            <% if url.empty? %>
+              <%= html_escape(vuln) %>
+            <% else %>
+              <a href="<%= html_escape(url) %>">
+                <%= html_escape(vuln) %>
+              </a>
+            <% end %>
+          </td>
+
+          <td>
+            <%= html_escape(package) %>
+          </td>
+
+          <td>
+            <%= html_escape(version) %>
+          </td>
+
+          <td class="<%= score_class %>">
+            <%= html_escape(score) %>
+          </td>
+
+          <td>
+            <%= html_escape(sources(row).join(", ")) %>
+          </td>
+
+          <td>
+            <%= html_escape(patch_state) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<% end %>
+
+</body>
+</html>
