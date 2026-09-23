@@ -27,6 +27,7 @@
     xclip
     xdotool
     xss-lock
+    chromium
   ];
 
   programs.i3status-rust = {
