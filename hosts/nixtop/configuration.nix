@@ -124,7 +124,9 @@
     '';
   };
 
-  users.users."${variables.username}".extraGroups = [ "wheel" "video" "audio" "disk" "networkmanager" ];
+  users.users."${variables.username}".extraGroups = [
+    "wheel" "video" "audio" "disk" "networkmanager" "dialout"
+  ];
 
   # After rebuilding, check whether the user timer is active:
   #   systemctl --user status low-battery-suspend.timer
