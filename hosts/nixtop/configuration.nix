@@ -1,4 +1,4 @@
-{ config, lib, pkgs, variables, ... }:
+{ config, lib, pkgs, variables, inputs, ... }:
 
 {
   imports =
@@ -209,6 +209,8 @@
     gnugrep
     xrandr
     coreutils-full
+
+    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   system.stateVersion = "24.11";

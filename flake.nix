@@ -17,6 +17,10 @@
       url = "github:tiiuae/sbomnix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    opencode = {
+      url = "github:anomalyco/opencode";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }:
