@@ -21,6 +21,10 @@
       url = "github:anomalyco/opencode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }:
@@ -63,6 +67,7 @@
           specialArgs = {
             inherit inputs;
             variables = hostVariables;
+            secrets = import /home/feni/nixos_secrets/${hostname}.nix;
           };
         };
     in
