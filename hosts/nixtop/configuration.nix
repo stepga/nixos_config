@@ -5,11 +5,10 @@
     [
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
-
       # shared desktop/X11 setup (window manager, sound, printing, ...)
       ../../modules/desktop.nix
-
       ../../modules/security-check.nix
+      ../../modules/opencode.nix
     ];
 
   services.xserver.videoDrivers = [ "amdgpu" ];
@@ -209,8 +208,6 @@
     gnugrep
     xrandr
     coreutils-full
-
-    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   system.stateVersion = "24.11";
