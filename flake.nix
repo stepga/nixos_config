@@ -37,18 +37,20 @@
           hostVariables = perHostVariables hostname;
         in
         nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
           modules = [
             ./modules/common.nix
             ./hosts/${hostname}/configuration.nix
 
             {
+              nixpkgs.hostPlatform = "x86_64-linux";
               networking.hostName = hostname;
             }
 
             home-manager.nixosModules.home-manager
             {
-              home-manager.extraSpecialArgs = { variables = hostVariables; };
+              home-manager.extraSpecialArgs = {
+                variables = hostVariables;
+              };
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users."${hostVariables.username}" = import ./hosts/${hostname}/home.nix;
