@@ -12,6 +12,7 @@ in
 {
   environment.systemPackages = [
     pkgs.bubblewrap
+    pkgs.tmux
 
     (pkgs.writeShellScriptBin "opencode-sandbox" ''
       set -euo pipefail
@@ -20,13 +21,13 @@ in
         cat <<'EOF'
       Usage: opencode-sandbox [readonly-path ...] [-- opencode-args ...]
 
-      Run OpenCode in a filesystem sandbox.
+      Run OpenCode in a filesystem sandbox inside tmux.
 
       The current working directory is mounted read/write.
       Additional paths can be specified before '--' and are mounted read-only.
 
       Options:
-        -h, --help    Show this help and exit
+        -h, --help    Show this help and exit.
         --            End of sandbox arguments; remaining arguments go to OpenCode.
 
       Examples:
@@ -115,6 +116,7 @@ in
 
       exec ${pkgs.bubblewrap}/bin/bwrap \
         "''${bwrap_args[@]}" \
+        ${pkgs.tmux}/bin/tmux new-session \
         ${inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/opencode "$@"
     '')
   ];
