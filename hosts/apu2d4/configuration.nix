@@ -55,12 +55,16 @@ in
     owner = "root";
     group = "root";
   };
-  systemd.tmpfiles.rules = [
-    "d /etc/ssh/authorized_keys.d 0755 root root -"
-  ];
   services.openssh.extraConfig = ''
     AuthorizedKeysFile .ssh/authorized_keys /etc/ssh/authorized_keys.d/%u
   '';
+
+  systemd.tmpfiles.rules = [
+    "d /etc/ssh/authorized_keys.d 0755 root root -"
+
+    "d /samba 0755 root root -"
+    "d /samba/public 0777 nobody nogroup -"
+  ];
 
   # https://github.com/NixOS/nixos-hardware/blob/master/pcengines/apu/default.nix
   boot.kernelParams = [ "console=ttyS0,115200n8" ];
@@ -283,6 +287,29 @@ in
     serviceConfig = {
       Type = "oneshot";
       User = "root";
+    };
+  };
+
+  services.samba = {
+    enable = true;
+
+    settings = {
+      global = {
+        workgroup = "WORKGROUP";
+        "map to guest" = "Bad User";
+        "guest account" = "nobody";
+      };
+
+      public = {
+        path = "/samba/public";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+        "force user" = "nobody";
+        "force group" = "nogroup";
+        "create mask" = "0666";
+        "directory mask" = "0777";
+      };
     };
   };
 

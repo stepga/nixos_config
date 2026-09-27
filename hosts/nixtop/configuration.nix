@@ -24,40 +24,6 @@
     };
   };
 
-  # >>>
-  # XXX quick test server (works fine with kodi on firetvstick)
-  services.samba = {
-    enable = true;
-
-    settings = {
-      global = {
-        workgroup = "WORKGROUP";
-        "map to guest" = "Bad User";
-        "guest account" = "nobody";
-      };
-
-      public = {
-        path = "/srv/samba/public";
-        browseable = "yes";
-        "read only" = "no";
-        "guest ok" = "yes";
-        "force user" = "nobody";
-        "force group" = "nogroup";
-        "create mask" = "0666";
-        "directory mask" = "0777";
-      };
-    };
-  };
-
-  systemd.tmpfiles.rules = [
-    "d /srv/samba 0755 root root -"
-    "d /srv/samba/public 0777 nobody nogroup -"
-  ];
-
-  networking.firewall.allowedTCPPorts = [ 445 139 ];
-  networking.firewall.allowedUDPPorts = [ 137 138 ];
-  # <<<
-
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
