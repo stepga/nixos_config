@@ -167,7 +167,7 @@ in
             type filter hook forward priority 0; policy accept;
           }
           chain output {
-            type filter hook output priority 0 ; policy accept;
+            type filter hook output priority 0; policy accept;
           }
         }
         table ip nat {
@@ -266,7 +266,6 @@ in
     };
   };
 
-  # TODO after; requires "sops-nix.service"
   systemd.services."rclone-nextcloud" = {
     script = ''
       set -eu

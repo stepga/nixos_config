@@ -1,8 +1,10 @@
 keys:
-  - &apu2d4 age1ds53rwlz4g6mpt8hc7lc0lv8x7hr6vwu7jls9y44zpxuddratykq2yexgx
+  - &feni age1ds53rwlz4g6mpt8hc7lc0lv8x7hr6vwu7jls9y44zpxuddratykq2yexgx
+  - &apu2d4 age1d9uksshfl2jvgr4eqmapd7np2ywh58a2nw6vg70kcrv07stf4ugqvv4fj0
 
 creation_rules:
   - path_regex: secrets/apu2d4\.yaml$
     key_groups:
       - age:
+          - *feni
           - *apu2d4
