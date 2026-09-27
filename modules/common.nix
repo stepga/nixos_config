@@ -4,7 +4,8 @@
   # Enable the Flakes feature and the accompanying new nix command-line tool
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.networkmanager.enable = true; # XOR wpa_supplicant via networking.wireless.enable = true;
+  # hosts with a statically configured network set this to false
+  networking.networkmanager.enable = lib.mkDefault true; # XOR wpa_supplicant via networking.wireless.enable = true;
 
   time.timeZone = "Europe/Berlin";
 

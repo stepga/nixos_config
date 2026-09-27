@@ -14,5 +14,6 @@
   hosts = {
     nixtop = { };
     blackbox = { };
+    apu2d4 = { };
   };
 }

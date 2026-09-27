@@ -10,6 +10,7 @@
 
   home.packages = with pkgs; [
     acpi
+    age
     alsa-utils # aplay
     amdgpu_top
     android-file-transfer

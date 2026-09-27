@@ -1,0 +1,8 @@
+keys:
+  - &apu2d4 age1ds53rwlz4g6mpt8hc7lc0lv8x7hr6vwu7jls9y44zpxuddratykq2yexgx
+
+creation_rules:
+  - path_regex: secrets/apu2d4\.yaml$
+    key_groups:
+      - age:
+          - *apu2d4

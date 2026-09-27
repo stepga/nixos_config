@@ -48,6 +48,7 @@
           modules = [
             ./modules/common.nix
             ./hosts/${hostname}/configuration.nix
+            inputs.sops-nix.nixosModules.sops
 
             {
               nixpkgs.hostPlatform = "x86_64-linux";
@@ -67,7 +68,6 @@
           specialArgs = {
             inherit inputs;
             variables = hostVariables;
-            secrets = import /home/feni/nixos_secrets/${hostname}.nix;
           };
         };
     in
