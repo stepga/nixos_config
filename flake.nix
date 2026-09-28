@@ -35,6 +35,9 @@
 
       pkgsFor = system: import nixpkgs { inherit system; };
       tunneldigger = system: (pkgsFor system).callPackage ./pkgs/tunneldigger {};
+      tunneldiggerOverlay = final: prev: {
+        tunneldigger = final.callPackage ./pkgs/tunneldigger {};
+      };
 
       # per-host variable set: common defaults, merged with the passed `hostname`
       # variable and the host-specific variables within `variables.nix`
@@ -55,6 +58,9 @@
 
             {
               nixpkgs.hostPlatform = "x86_64-linux";
+              nixpkgs.overlays = [
+                tunneldiggerOverlay
+              ];
               networking.hostName = hostname;
             }
 
