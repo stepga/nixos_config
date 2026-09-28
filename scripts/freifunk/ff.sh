@@ -41,6 +41,8 @@ fi
 RUN_USER="${SUDO_USER:-$USER}"
 RUN_UID="$(id -u "$RUN_USER")"
 RUN_GID="$(id -g "$RUN_USER")"
+RUN_HOME="$(getent passwd "$RUN_UID" | cut -d: -f6)"
+RUN_XDG_RUNTIME_DIR="/run/user/$RUN_UID"
 
 # ------------------------------------------------------------
 # Verify required commands
@@ -394,7 +396,13 @@ ip netns exec "$NS" \
         --reuid="$RUN_UID" \
         --regid="$RUN_GID" \
         --init-groups \
-        -- "$@"
+        -- \
+        env \
+            HOME="$RUN_HOME" \
+            USER="$RUN_USER" \
+            LOGNAME="$RUN_USER" \
+            XDG_RUNTIME_DIR="$RUN_XDG_RUNTIME_DIR" \
+            "$@"
 
 APP_STATUS=$?
 
