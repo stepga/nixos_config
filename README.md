@@ -1,5 +1,3 @@
 # nixos config
 
-## TODOs
-
-[ ] move common code into common.nix / home.nix
+This is a big mess! :-)
