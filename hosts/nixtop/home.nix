@@ -38,6 +38,7 @@
     man-pages-posix
     mdcat # mdless
     ncdu
+    nftables
     nil
     nixfmt
     nload
@@ -49,7 +50,9 @@
     ripgrep
     ripgrep-all # rga, rga-fzf
     ruby
+    tcpdump
     tig
+    transmission_4-gtk
     unixtools.netstat
     unrar
     unzip
