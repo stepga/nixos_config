@@ -52,7 +52,6 @@
     ruby
     tcpdump
     tig
-    transmission_4-gtk
     unixtools.netstat
     unrar
     unzip
@@ -62,6 +61,11 @@
     xxd
     yt-dlp
     zip
+
+    # enforce transmission-gtk being executed via freifunk tunnel
+    (writeShellScriptBin "transmission-gtk" ''
+      exec ${freifunk}/bin/ff.sh ${transmission_4-gtk}/bin/transmission-gtk "$@"
+    '')
   ];
 
   home.sessionPath = [
