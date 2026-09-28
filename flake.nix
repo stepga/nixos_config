@@ -33,6 +33,9 @@
       variables = import ./variables.nix;
       hostnames = builtins.attrNames variables.hosts;
 
+      pkgsFor = system: import nixpkgs { inherit system; };
+      tunneldigger = system: (pkgsFor system).callPackage ./pkgs/tunneldigger {};
+
       # per-host variable set: common defaults, merged with the passed `hostname`
       # variable and the host-specific variables within `variables.nix`
       perHostVariables = hostname:
@@ -72,6 +75,7 @@
         };
     in
     {
+      packages.x86_64-linux.tunneldigger = tunneldigger "x86_64-linux";
       nixosConfigurations = lib.genAttrs hostnames mkHost;
     };
 }
