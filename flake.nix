@@ -37,6 +37,7 @@
       tunneldigger = system: (pkgsFor system).callPackage ./pkgs/tunneldigger {};
       tunneldiggerOverlay = final: prev: {
         tunneldigger = final.callPackage ./pkgs/tunneldigger {};
+        freifunk = final.callPackage ./scripts/freifunk {};
       };
 
       # per-host variable set: common defaults, merged with the passed `hostname`

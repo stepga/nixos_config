@@ -184,6 +184,7 @@
     gnugrep
     xrandr
     coreutils-full
+    freifunk
   ];
 
   system.stateVersion = "24.11";
