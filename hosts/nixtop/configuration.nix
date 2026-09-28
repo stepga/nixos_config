@@ -16,11 +16,9 @@
       enable = true;
       uuid = "72a9ed2b-8327-4f2e-ba92-799246805f57";
       interface = "ff0";
-      # TODO: derive from the default route and restart on route changes.
-      underlayInterface = "enp7s0f4u1u4";
-      brokers = [
-        "tunnel-gw.berlin.freifunk.net:8942"
-      ];
+      # null: automatically determine the broker route interface
+      underlayInterface = null;
+      broker = "tunnel-gw.berlin.freifunk.net:8942";
     };
 
   services.xserver.videoDrivers = [ "amdgpu" ];
