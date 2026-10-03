@@ -136,6 +136,10 @@ in
       };
     };
 
+    environment.etc."tunneldigger-dhcpcd.conf".text = ''
+      nohook resolv.conf
+    '';
+
     systemd.services.tunneldigger-dhcp = {
       description = "DHCP on Tunneldigger interface";
 
@@ -158,6 +162,7 @@ in
           exec ${pkgs.dhcpcd}/bin/dhcpcd \
             -4 \
             --nobackground \
+            --config /etc/tunneldigger-dhcpcd.conf \
             "$interface"
         '';
 
