@@ -1,8 +1,10 @@
-{ config, lib, pkgs, variables, ... }:
+{ ... }:
 
 {
-  home.username = "${variables.username}";
-  home.homeDirectory = "/home/${variables.username}";
+  imports = [
+    # shared settings for all hosts
+    ../../common/home/common.nix
+  ];
 
   home.stateVersion = "25.11";
 }

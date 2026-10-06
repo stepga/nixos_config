@@ -33,8 +33,10 @@ let
 in
 {
   imports = [
+    # shared settings for all hosts
+    ../../common/nixos/common.nix
     ./hardware-configuration.nix
-    ../../modules/home-assistant.nix
+    ../../common/nixos/home-assistant.nix
   ];
 
   sops.defaultSopsFile = ../../secrets/${variables.hostname}.yaml;

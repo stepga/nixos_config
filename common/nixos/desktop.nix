@@ -80,8 +80,8 @@
 
     actual-server
 
-    (pkgs.callPackage ../scripts/clip/derivation.nix {}) # depends on: xclip, imagemagick
-    (pkgs.callPackage ../scripts/termspawn/derivation.nix {})
+    (pkgs.callPackage ../../scripts/clip/derivation.nix {}) # depends on: xclip, imagemagick
+    (pkgs.callPackage ../../scripts/termspawn/derivation.nix {})
   ];
 
   # Create a dedicated user and group for Actual Budget

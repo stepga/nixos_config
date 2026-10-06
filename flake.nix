@@ -53,7 +53,6 @@
         in
         nixpkgs.lib.nixosSystem {
           modules = [
-            ./modules/common.nix
             ./hosts/${hostname}/configuration.nix
             inputs.sops-nix.nixosModules.sops
 

@@ -2,7 +2,9 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ # shared settings for all hosts
+      ../../common/nixos/common.nix
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 

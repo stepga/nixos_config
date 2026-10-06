@@ -2,13 +2,15 @@
 
 {
   imports = [
+    # shared settings for all hosts
+    ../../common/nixos/common.nix
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     # shared desktop/X11 setup (window manager, sound, printing, ...)
-    ../../modules/desktop.nix
-    ../../modules/security-check.nix
-    ../../modules/opencode.nix
-    ../../modules/tunneldigger.nix
+    ../../common/nixos/desktop.nix
+    ../../common/nixos/security-check.nix
+    ../../common/nixos/opencode.nix
+    ../../common/nixos/tunneldigger.nix
   ];
 
   services.tunneldigger = {
