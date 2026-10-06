@@ -31,6 +31,9 @@ set completeopt=menu,menuone,noselect,noinsert
 "  expandtab:     Insert spaces instead of actual tab characters.
 autocmd FileType json,html,xml,yaml setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
+set background=light
+colorscheme morning
+
 " +----------------------------------------------------------------------------+
 " |                            PLUGINS                                         |
 " +----------------------------------------------------------------------------+
