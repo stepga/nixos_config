@@ -74,6 +74,8 @@
 
   programs.zsh = {
     enable = true;
+
+    defaultKeymap = "viins";
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
@@ -95,6 +97,10 @@
     initContent = lib.mkOrder 1200 ''
       ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#5f87ff,bold'
       source ~/.functions.sh
+
+      bindkey -M viins '^[[1;3C' forward-word
+      bindkey -M viins '^[[1;3D' backward-word
+      bindkey -v
     '';
   };
 
