@@ -234,12 +234,38 @@
   programs.kitty = {
     enable = true;
     font = {
-      name = "Font Awesome 7 Free Regular";
-      size = 12;
+      name = "JetBrains Mono";
+      size = 14;
     };
     settings = {
+      font_weight = 600;
       enable_audio_bell = false;
       copy_on_select = "clipboard";
+      background = "#faf7ef";
+      foreground = "#073642";
+      selection_background = "#073642";
+      selection_foreground = "#fdf6e3";
+      cursor = "#073642";
+      cursor_text_color = "#fdf6e3";
+
+      # ANSI palette (e.g. for `tig`): solarized-inspired light palette with
+      # some of the bright colors made a bit stronger
+      color0 = "#073642";
+      color8 = "#586e75";
+      color1 = "#dc322f";
+      color9 = "#cb4b16";
+      color2 = "#859900";
+      color10 = "#6c8a00";
+      color3 = "#b58900";
+      color11 = "#a57800";
+      color4 = "#268bd2";
+      color12 = "#1976b9";
+      color5 = "#d33682";
+      color13 = "#b52d6f";
+      color6 = "#2aa198";
+      color14 = "#178f83";
+      color7 = "#eee8d5";
+      color15 = "#ffffff";
     };
   };
 
@@ -302,13 +328,13 @@
         #exec --no-startup-id dex --autostart --environment i3
       ];
       fonts = {
-        names = [ "DejaVu Sans Mono for Powerline" "Font Awesome 7 Free Regular"];
+        names = [ "JetBrains Mono" ];
         size = 12.0;
       };
       bars = [
         {
           fonts = {
-            names = [ "DejaVu Sans Mono for Powerline" "Font Awesome 7 Free Regular"];
+            names = [ "JetBrains Mono" ];
             size = 12.0;
           };
           position = "top";

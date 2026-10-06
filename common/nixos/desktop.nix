@@ -62,10 +62,8 @@
   services.blueman.enable = true;
 
   fonts.packages = with pkgs; [
-    font-awesome
-    dejavu_fonts
+    jetbrains-mono
     powerline-fonts
-    powerline-symbols
   ];
 
   environment.variables = {
