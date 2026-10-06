@@ -93,6 +93,7 @@
       ];
     };
     initContent = lib.mkOrder 1200 ''
+      ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#5f87ff,bold'
       source ~/.functions.sh
     '';
   };
